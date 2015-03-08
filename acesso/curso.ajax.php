@@ -1,0 +1,27 @@
+<?php
+	header( 'Cache-Control: no-cache' );
+	header( 'Content-type: application/xml; charset="iso-8859-1"', true );
+include('includes/funcoes.php');
+	$con = mysql_connect( '177.70.22.184', 'underweb_pincel', 'CEDTEC2014Pincel' ) ;
+	mysql_select_db( 'underweb_pincel', $con );
+
+	$nivel = utf8_decode(mysql_real_escape_string( $_REQUEST['nivel']));
+	$curso = array();
+	$trocarIsso = array('à','á','â','ã','ä','å','ç','è','é','ê','ë','ì','í','î','ï','ñ','ò','ó','ô','õ','ö','ù','ü','ú','ÿ','À','Á','Â','Ã','Ä','Å','Ç','È','É','Ê','Ë','Ì','Í','Î','Ï','Ñ','Ò','Ó','Ô','Õ','Ö','O','Ù','Ü','Ú','Ÿ',);
+	$porIsso = array('a','a','a','a','a','a','c','e','e','e','e','i','i','i','i','n','o','o','o','o','o','u','u','u','y','A','A','A','A','A','A','C','E','E','E','E','I','I','I','I','N','O','O','O','O','O','O','U','U','U','Y',);
+	$nivel2 = remover_acentos($nivel);
+	$sql = "SELECT DISTINCT curso, empresa FROM disciplinas WHERE nivel like '%$nivel%'";
+	$res = mysql_query( $sql );
+	while ( $row = mysql_fetch_array( $res ) ) {
+		$curso[] = array(
+			'curso'			=> $row['curso'],
+			'empresa'			=> $row['empresa'],
+			'cursoexib'			=> utf8_encode(format_curso($row['curso']))
+			
+		);
+	}
+
+	echo( json_encode( $curso ) );
+	
+	
+	?>
